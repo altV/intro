@@ -6,11 +6,16 @@ module Root
   extend self
 
   def partial_from_stdin
-    #STDIN.raw {
+    blk = ->{
       r = select [STDIN],[],[],0.2
       return ['', Time.now] unless r
       result = STDIN.read_nonblock 200
-      [result, Time.now]#}
+      [result, Time.now]}
+    if STDIN.tty?
+      STDIN.raw { blk[] }
+    else
+      blk[]
+    end
   end
 
   def add_to_context char
@@ -23,7 +28,9 @@ module Root
 
   def run
     @context = []
+    $mtime = File.mtime('intro.rb')
     loop do
+      break if File.mtime('intro.rb') - $mtime != 0
       add_to_context partial_from_stdin[0]
       if @context.size > 1 &&
           (@context[-1][:time] - @context[-2][:time] > 0.5.seconds) &&
@@ -32,7 +39,7 @@ module Root
         @command = @command.split(' ').map(&:downcase).join(' ')
         @context = []
         puts "Context: #{@command}"
-        ($ninja=1; exit) if @command == 'ninja'
+        ($ninja=1; break) if @command == 'ninja'
         begin
           case
           when c=Basic::Table[@command]
