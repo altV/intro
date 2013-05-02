@@ -35,6 +35,7 @@ module Root
       if @context.size > 1 &&
           (@context[-1][:time] - @context[-2][:time] > 0.05.seconds) &&
           @context.map{|e| e[:char]}.join != ''
+        @command = @context.map{|e| e[:char]}.join
         @command = @command.split(' ').map(&:downcase).join(' ')
         @context = []
         puts "Context: #{@command}"
