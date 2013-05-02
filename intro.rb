@@ -33,8 +33,8 @@ module Root
       break if File.mtime('intro.rb') - $mtime != 0
       add_to_context partial_from_stdin[0]
       if @context.size > 1 &&
-          (@context[-1][:time] - @context[-2][:time] > 0.10.seconds) &&
-        @command = @context.map{|e| e[:char]}.join
+          (@context[-1][:time] - @context[-2][:time] > 0.05.seconds) &&
+          @context.map{|e| e[:char]}.join != ''
         @command = @command.split(' ').map(&:downcase).join(' ')
         @context = []
         puts "Context: #{@command}"
