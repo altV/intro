@@ -51,6 +51,65 @@ module Root
   module Basic
     extend self
 
+    Letters = {
+      'Aff':    -> { `xte 'key A'` },
+      'Brav':   -> { `xte 'key B'` },
+      'Cai':    -> { `xte 'key C'` },
+      'Doy':    -> { `xte 'key D'` },
+      'Eck':    -> { `xte 'key E'` },
+      'Fay':    -> { `xte 'key F'` },
+      'Goff':   -> { `xte 'key G'` },
+      'Hoop':   -> { `xte 'key H'` },
+      'Ish':    -> { `xte 'key I'` },
+      'Jo':     -> { `xte 'key J'` },
+      'Keel':   -> { `xte 'key K'` },
+      'Lee':    -> { `xte 'key L'` },
+      'Mike':   -> { `xte 'key M'` },
+      'Noy':    -> { `xte 'key N'` },
+      'Osc':    -> { `xte 'key O'` },
+      'Osh':    -> { `xte 'key O'` },
+      'Pui':    -> { `xte 'key P'` },
+      'Pom':    -> { `xte 'key P'` },
+      'Quebec': -> { `xte 'key Q'` },
+      'Queen':  -> { `xte 'key Q'` },
+      'Ree':    -> { `xte 'key R'` },
+      'Soi':    -> { `xte 'key S'` },
+      'Tay':    -> { `xte 'key T'` },
+      'Uni':    -> { `xte 'key U'` },
+      'Umm':    -> { `xte 'key U'` },
+      'Van':    -> { `xte 'key V'` },
+      'Wes':    -> { `xte 'key W'` },
+      'Xanth':  -> { `xte 'key X'` },
+      'Yaa':    -> { `xte 'key Y'` },
+      'Zul':    -> { `xte 'key Z'` },
+      'a':      -> { `xte 'key a'` },
+      'b':      -> { `xte 'key b'` },
+      'c':      -> { `xte 'key c'` },
+      'd':      -> { `xte 'key d'` },
+      'e':      -> { `xte 'key e'` },
+      'f':      -> { `xte 'key f'` },
+      'g':      -> { `xte 'key g'` },
+      'h':      -> { `xte 'key h'` },
+      'i':      -> { `xte 'key i'` },
+      'j':      -> { `xte 'key j'` },
+      'k':      -> { `xte 'key k'` },
+      'l':      -> { `xte 'key l'` },
+      'm':      -> { `xte 'key m'` },
+      'n':      -> { `xte 'key n'` },
+      'o':      -> { `xte 'key o'` },
+      'p':      -> { `xte 'key p'` },
+      'q':      -> { `xte 'key q'` },
+      'r':      -> { `xte 'key r'` },
+      's':      -> { `xte 'key s'` },
+      't':      -> { `xte 'key t'` },
+      'u':      -> { `xte 'key u'` },
+      'v':      -> { `xte 'key v'` },
+      'w':      -> { `xte 'key w'` },
+      'x':      -> { `xte 'key x'` },
+      'y':      -> { `xte 'key y'` },
+      'z':      -> { `xte 'key z'` }
+    }
+
     def process command
       words = command.split(' ')
       case command
@@ -66,58 +125,6 @@ module Root
         `xte 'str #{words[1..-1].join(' ')}'`
         `xte 'key Return' ')}'`
 
-      when 'Aff'            then `xte 'key a'`
-      when 'Brav'           then `xte 'key a'`
-      when 'Cai'            then `xte 'key a'`
-      when 'Doy'            then `xte 'key a'`
-      when 'Eck'            then `xte 'key a'`
-      when 'Fay'            then `xte 'key a'`
-      when 'Goff'           then `xte 'key a'`
-      when 'Hoop'           then `xte 'key a'`
-      when 'Ish'            then `xte 'key a'`
-      when 'Jo'             then `xte 'key a'`
-      when 'Keel'           then `xte 'key a'`
-      when 'Lee'            then `xte 'key a'`
-      when 'Mike'           then `xte 'key a'`
-      when 'Noy'            then `xte 'key a'`
-      when 'Osc','Osh'      then `xte 'key a'`
-      when 'Pui','Pom'      then `xte 'key a'`
-      when 'Quebec','Queen' then `xte 'key a'`
-      when 'Ree'            then `xte 'key a'`
-      when 'Soi'            then `xte 'key a'`
-      when 'Tay'            then `xte 'key a'`
-      when 'Uni','Umm'      then `xte 'key a'`
-      when 'Van'            then `xte 'key a'`
-      when 'Wes'            then `xte 'key a'`
-      when 'Xanth'          then `xte 'key a'`
-      when 'Yaa'            then `xte 'key a'`
-      when 'Zul'            then `xte 'key a'`
-      when 'ash'            then `xte 'key a'`
-      when 'ash'            then `xte 'key b'`
-      when 'ash'            then `xte 'key c'`
-      when 'ash'            then `xte 'key d'`
-      when 'ash'            then `xte 'key e'`
-      when 'ash'            then `xte 'key f'`
-      when 'ash'            then `xte 'key g'`
-      when 'ash'            then `xte 'key h'`
-      when 'ash'            then `xte 'key i'`
-      when 'ash'            then `xte 'key j'`
-      when 'ash'            then `xte 'key k'`
-      when 'ash'            then `xte 'key l'`
-      when 'ash'            then `xte 'key m'`
-      when 'ash'            then `xte 'key n'`
-      when 'ash'            then `xte 'key o'`
-      when 'ash'            then `xte 'key p'`
-      when 'ash'            then `xte 'key q'`
-      when 'ash'            then `xte 'key r'`
-      when 'ash'            then `xte 'key s'`
-      when 'ash'            then `xte 'key t'`
-      when 'ash'            then `xte 'key u'`
-      when 'ash'            then `xte 'key v'`
-      when 'ash'            then `xte 'key w'`
-      when 'ash'            then `xte 'key x'`
-      when 'ash'            then `xte 'key y'`
-      when 'ash'            then `xte 'key z'`
 
       when 'enter'          then `xte 'key Return'`
 
