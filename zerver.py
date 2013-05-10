@@ -6,7 +6,7 @@ import natlink
 from natlinkutils import *
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#s.connect(('192.168.1.92', 5000))
+s.connect(('192.168.1.92', 5000))
 g = None
 
 def run():
@@ -32,7 +32,7 @@ def run():
         print 'all closed'
 def beginCallback(moduleInfo, checkAll=None):
     print 'beginCallback'
-    updateGrammarFromClient()
+    #updateGrammarFromClient()
     print '..loaded.'
 def changeCallback(event_type, args): #mic or user
     print 'changeCallback'
@@ -44,16 +44,19 @@ def updateGrammarFromClient():
         g.unload()
         g = None
     g = Grammar()
-    g.load("<dgndictation> imported; <main> exported = ls [minus la] | grep | vim | bash | say <dgndictation> [stop];", 1)
+    s.send('.poll\n')
+    text = s.makefile().readline()
+    print "Got this grammar:", text
+    g.load(text, 1);
     #g.activateSet(['main'])
     g.activateAll()
     g.setExclusive(1)
     return(None)
-    s.send('poll\n')
-    s.makefile().readline()
 
 class Grammar(GrammarBase):
     def gotResultsInit(self,a, w):
+        global s
+        s.send(str(a)+"\n")
         print 'init',a, w
     def gotResults(self,words,r):
         print "total", words

@@ -10,14 +10,14 @@ module Root
   def run
     self.socket = TCPServer.open(5000).accept
     loop do
-      p @context
-      @command = @context.map{|e| e[:char]}.join
-      @command = @command.split(' ').map(&:downcase).join(' ')
-      @command = @command[-1] if @command[0] == "\x7F"
-      @context = []
-      puts "Context: #{@command}"
-      #Basic.notify @command
-      Basic.process @command
+      case @command = socket.readline[0..-2].tap {|e| p e}
+      when '.poll'
+        socket.puts Basic.current_text_grammar
+      else
+        puts "Context: #{@command}"
+        #Basic.notify @command
+        Basic.process @command
+      end
     end
   end
 
@@ -34,8 +34,11 @@ module Root
     }
 
     SayType = {
-      'say  <dgndictation>' =>    ->(r) { `xte 'key A'` },
-      'type <dgndictation>' =>    ->(r) { `xte 'key A'` }
+      'say  <dgndictation>' =>    ->(r) { `xte 'str #{words[1..-1].join(' ')}'` },
+      'type <dgndictation>' =>    ->(r) {
+        `xte 'str #{words[1..-1].join(' ')}'`
+        `xte 'key Return' ')}'`
+      }
     }
 
     Letters = {
@@ -98,7 +101,6 @@ module Root
       'pysh'   => ->(r) { `xte 'key Return'` }
     }
 
-
     Awesome = {
       'one'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
       'two'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
@@ -108,58 +110,50 @@ module Root
       'six'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
       'seven' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
       'eight' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
-      'nine'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' }
+      'nine'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
+      'nex'   => ->(r) { awesome 'awful.client.focus.byidx(1)'               },
+      'prev'  => ->(r) { awesome 'awful.client.focus.byidx(-1)'              }
+    }
+
+    Programs = {
+      'browser'  => ->(r) { `google-chrome` }
     }
 
     def current_text_grammar
-      text_grammar Letters, SayType, GnomeTerminal
+      text_grammar *current_grammars
+    end
+
+    def current_grammars
+      @current_grammars = [Letters, SayType, GnomeTerminal, Awesome]
     end
 
     def text_grammar *grammars
-      "<main> exported = " + grammars.flat_map {|e| e.keys}.join(' | ')
+      "<dgndictation> imported; <main> exported = " +
+        grammars.flat_map {|e| e.keys}.join(' | ') + ";"
     end
 
     def process command
-      words = command.split(' ')
-      case command
-      when 'browser' then `google-chrome`
-      when /^ruby .+/
-        begin
-          eval "#{words[1]} '#{words[2..-1].join(' ')}'"
-        rescue Exception => e
-          p e
-        end
-      when /^say .+/        then `xte 'str #{words[1..-1].join(' ')}'`
-      when /^phrase .+/
-        `xte 'str #{words[1..-1].join(' ')}'`
-        `xte 'key Return' ')}'`
+      @current_grammars.each do |g|
 
-
-      when 'right' then `xte 'mousermove 50 0'`
-      when 'left'  then `xte 'mousermove -50 0'`
-      when 'down'  then `xte 'mousermove 0 50'`
-      when 'up'    then `xte 'mousermove 0 -50'`
-      when 'click' then `xte 'mouseclick 1'`
-      else
-        puts "no command #{@command}"
       end
     rescue StandardError => e
       p e
     end
 
-    def notify message; `notify-send "Dragon" "#{message.gsub!('"','\"')}"`               end
-    def say    message; `echo "#{message.gsub!('"','\"')}" | espeak`                      end
   end
 
   module Sys
     extend self
     def awesome     str; `echo "return #{str}" | awesome-client`                          end
     def awesome_say str; `echo "return #{str.gsub!('"','\"')}" | awesome-client | espeak` end
+    def notify message; `notify-send "Dragon" "#{message.gsub!('"','\"')}"`               end
+    def say    message; `echo "#{message.gsub!('"','\"')}" | espeak`                      end
   end
   extend Sys
+  Root::Basic.extend Sys
 end
 
 
-Root.run if __FILE__ == $_
+Root.run if __FILE__ == $0
 puts 'Ready.'
 #system 'stty -raw echo'
