@@ -1,114 +1,123 @@
 require 'pry-full'
 require 'io/console'
+require 'socket'
 require 'active_support/all'
 
 module Root
   extend self
-
-  def partial_from_stdin
-    blk = ->{
-      r = select [STDIN],[],[],0.2
-      return ['', Time.now] unless r
-      result = STDIN.read_nonblock 200
-      [result, Time.now]}
-    if STDIN.tty?
-      STDIN.raw { blk[] }
-    else
-      blk[]
-    end
-  end
-
-  def add_to_context char
-    if char == '' && @context.size > 1 && @context[-2][:char] == ''
-      @context[-1][:time] = Time.now
-    else
-      @context << {char: char, time: Time.now}
-    end
-  end
+  attr_accessor :socket
 
   def run
-    @context = []
-    $mtime = File.mtime('intro.rb')
+    self.socket = TCPServer.open(5000).accept
     loop do
-      break if File.mtime('intro.rb') - $mtime != 0
-      add_to_context partial_from_stdin[0]
-      if @context.size > 1 &&
-          (@context[-1][:time] - @context[-2][:time] > 0.05.seconds) &&
-          @context.map{|e| e[:char]}.join != ''
-        system 'clear'
-        p @context
-        @command = @context.map{|e| e[:char]}.join
-        @command = @command.split(' ').map(&:downcase).join(' ')
-        @command = @command[-1] if @command[0] == "\x7F"
-        @context = []
-        puts "Context: #{@command}"
-        #Basic.notify @command
-        Basic.process @command
-      end
+      p @context
+      @command = @context.map{|e| e[:char]}.join
+      @command = @command.split(' ').map(&:downcase).join(' ')
+      @command = @command[-1] if @command[0] == "\x7F"
+      @context = []
+      puts "Context: #{@command}"
+      #Basic.notify @command
+      Basic.process @command
     end
+  end
+
+  def current_state # not actually needed, and a bad knowledge. to be called from particular grammars
+    {client_type:      awesome('client.focus.class'    )[ 11..-3],
+     client_pid:       awesome('client.focus.pid'      )[ 11..-3],
+     client_name:      awesome('client.focus.name'     )[ 11..-3]   }
   end
 
   module Basic
     extend self
 
-    Letters = {
-      'Aff':    -> { `xte 'key A'` },
-      'Brav':   -> { `xte 'key B'` },
-      'Cai':    -> { `xte 'key C'` },
-      'Doy':    -> { `xte 'key D'` },
-      'Eck':    -> { `xte 'key E'` },
-      'Fay':    -> { `xte 'key F'` },
-      'Goff':   -> { `xte 'key G'` },
-      'Hoop':   -> { `xte 'key H'` },
-      'Ish':    -> { `xte 'key I'` },
-      'Jo':     -> { `xte 'key J'` },
-      'Keel':   -> { `xte 'key K'` },
-      'Lee':    -> { `xte 'key L'` },
-      'Mike':   -> { `xte 'key M'` },
-      'Noy':    -> { `xte 'key N'` },
-      'Osc':    -> { `xte 'key O'` },
-      'Osh':    -> { `xte 'key O'` },
-      'Pui':    -> { `xte 'key P'` },
-      'Pom':    -> { `xte 'key P'` },
-      'Quebec': -> { `xte 'key Q'` },
-      'Queen':  -> { `xte 'key Q'` },
-      'Ree':    -> { `xte 'key R'` },
-      'Soi':    -> { `xte 'key S'` },
-      'Tay':    -> { `xte 'key T'` },
-      'Uni':    -> { `xte 'key U'` },
-      'Umm':    -> { `xte 'key U'` },
-      'Van':    -> { `xte 'key V'` },
-      'Wes':    -> { `xte 'key W'` },
-      'Xanth':  -> { `xte 'key X'` },
-      'Yaa':    -> { `xte 'key Y'` },
-      'Zul':    -> { `xte 'key Z'` },
-      'a':      -> { `xte 'key a'` },
-      'b':      -> { `xte 'key b'` },
-      'c':      -> { `xte 'key c'` },
-      'd':      -> { `xte 'key d'` },
-      'e':      -> { `xte 'key e'` },
-      'f':      -> { `xte 'key f'` },
-      'g':      -> { `xte 'key g'` },
-      'h':      -> { `xte 'key h'` },
-      'i':      -> { `xte 'key i'` },
-      'j':      -> { `xte 'key j'` },
-      'k':      -> { `xte 'key k'` },
-      'l':      -> { `xte 'key l'` },
-      'm':      -> { `xte 'key m'` },
-      'n':      -> { `xte 'key n'` },
-      'o':      -> { `xte 'key o'` },
-      'p':      -> { `xte 'key p'` },
-      'q':      -> { `xte 'key q'` },
-      'r':      -> { `xte 'key r'` },
-      's':      -> { `xte 'key s'` },
-      't':      -> { `xte 'key t'` },
-      'u':      -> { `xte 'key u'` },
-      'v':      -> { `xte 'key v'` },
-      'w':      -> { `xte 'key w'` },
-      'x':      -> { `xte 'key x'` },
-      'y':      -> { `xte 'key y'` },
-      'z':      -> { `xte 'key z'` }
+    GnomeTerminal = {
     }
+
+    SayType = {
+      'say  <dgndictation>' =>    ->(r) { `xte 'key A'` },
+      'type <dgndictation>' =>    ->(r) { `xte 'key A'` }
+    }
+
+    Letters = {
+      'Aff'    => ->(r) { `xte 'key A'` },
+      'Brav'   => ->(r) { `xte 'key B'` },
+      'Cai'    => ->(r) { `xte 'key C'` },
+      'Doy'    => ->(r) { `xte 'key D'` },
+      'Eck'    => ->(r) { `xte 'key E'` },
+      'Fay'    => ->(r) { `xte 'key F'` },
+      'Goff'   => ->(r) { `xte 'key G'` },
+      'Hoop'   => ->(r) { `xte 'key H'` },
+      'Ish'    => ->(r) { `xte 'key I'` },
+      'Jo'     => ->(r) { `xte 'key J'` },
+      'Keel'   => ->(r) { `xte 'key K'` },
+      'Lee'    => ->(r) { `xte 'key L'` },
+      'Mike'   => ->(r) { `xte 'key M'` },
+      'Noy'    => ->(r) { `xte 'key N'` },
+      'Osc'    => ->(r) { `xte 'key O'` },
+      'Osh'    => ->(r) { `xte 'key O'` },
+      'Pui'    => ->(r) { `xte 'key P'` },
+      'Pom'    => ->(r) { `xte 'key P'` },
+      'Quebec' => ->(r) { `xte 'key Q'` },
+      'Queen'  => ->(r) { `xte 'key Q'` },
+      'Ree'    => ->(r) { `xte 'key R'` },
+      'Soi'    => ->(r) { `xte 'key S'` },
+      'Tay'    => ->(r) { `xte 'key T'` },
+      'Uni'    => ->(r) { `xte 'key U'` },
+      'Umm'    => ->(r) { `xte 'key U'` },
+      'Van'    => ->(r) { `xte 'key V'` },
+      'Wes'    => ->(r) { `xte 'key W'` },
+      'Xanth'  => ->(r) { `xte 'key X'` },
+      'Yaa'    => ->(r) { `xte 'key Y'` },
+      'Zul'    => ->(r) { `xte 'key Z'` },
+      'a'      => ->(r) { `xte 'key a'` },
+      'b'      => ->(r) { `xte 'key b'` },
+      'c'      => ->(r) { `xte 'key c'` },
+      'd'      => ->(r) { `xte 'key d'` },
+      'e'      => ->(r) { `xte 'key e'` },
+      'f'      => ->(r) { `xte 'key f'` },
+      'g'      => ->(r) { `xte 'key g'` },
+      'h'      => ->(r) { `xte 'key h'` },
+      'i'      => ->(r) { `xte 'key i'` },
+      'j'      => ->(r) { `xte 'key j'` },
+      'k'      => ->(r) { `xte 'key k'` },
+      'l'      => ->(r) { `xte 'key l'` },
+      'm'      => ->(r) { `xte 'key m'` },
+      'n'      => ->(r) { `xte 'key n'` },
+      'o'      => ->(r) { `xte 'key o'` },
+      'p'      => ->(r) { `xte 'key p'` },
+      'q'      => ->(r) { `xte 'key q'` },
+      'r'      => ->(r) { `xte 'key r'` },
+      's'      => ->(r) { `xte 'key s'` },
+      't'      => ->(r) { `xte 'key t'` },
+      'u'      => ->(r) { `xte 'key u'` },
+      'v'      => ->(r) { `xte 'key v'` },
+      'w'      => ->(r) { `xte 'key w'` },
+      'x'      => ->(r) { `xte 'key x'` },
+      'y'      => ->(r) { `xte 'key y'` },
+      'z'      => ->(r) { `xte 'key z'` },
+      'pysh'   => ->(r) { `xte 'key Return'` }
+    }
+
+
+    Awesome = {
+      'one'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
+      'two'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
+      'three' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
+      'four'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][4])' },
+      'five'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][5])' },
+      'six'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
+      'seven' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
+      'eight' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
+      'nine'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' }
+    }
+
+    def current_text_grammar
+      text_grammar Letters, SayType, GnomeTerminal
+    end
+
+    def text_grammar *grammars
+      "<main> exported = " + grammars.flat_map {|e| e.keys}.join(' | ')
+    end
 
     def process command
       words = command.split(' ')
@@ -126,18 +135,6 @@ module Root
         `xte 'key Return' ')}'`
 
 
-      when 'enter'          then `xte 'key Return'`
-
-      when 'one','1'   then awesome 'awful.tag.viewonly(tags[mouse.screen][1])'
-      when 'two','2'   then awesome 'awful.tag.viewonly(tags[mouse.screen][2])'
-      when 'three','3' then awesome 'awful.tag.viewonly(tags[mouse.screen][3])'
-      when 'four','4'  then awesome 'awful.tag.viewonly(tags[mouse.screen][4])'
-      when 'five','5'  then awesome 'awful.tag.viewonly(tags[mouse.screen][5])'
-      when 'six','6'   then awesome 'awful.tag.viewonly(tags[mouse.screen][6])'
-      when 'seven','7' then awesome 'awful.tag.viewonly(tags[mouse.screen][7])'
-      when 'eight','8' then awesome 'awful.tag.viewonly(tags[mouse.screen][8])'
-      when 'nine','9'  then awesome 'awful.tag.viewonly(tags[mouse.screen][9])'
-
       when 'right' then `xte 'mousermove 50 0'`
       when 'left'  then `xte 'mousermove -50 0'`
       when 'down'  then `xte 'mousermove 0 50'`
@@ -150,15 +147,19 @@ module Root
       p e
     end
 
-    def awesome     str; `echo "return #{str}" | awesome-client`                          end
-    def awesome_say str; `echo "return #{str.gsub!('"','\"')}" | awesome-client | espeak` end
-
     def notify message; `notify-send "Dragon" "#{message.gsub!('"','\"')}"`               end
     def say    message; `echo "#{message.gsub!('"','\"')}" | espeak`                      end
   end
+
+  module Sys
+    extend self
+    def awesome     str; `echo "return #{str}" | awesome-client`                          end
+    def awesome_say str; `echo "return #{str.gsub!('"','\"')}" | awesome-client | espeak` end
+  end
+  extend Sys
 end
 
 
+Root.run if __FILE__ == $_
 puts 'Ready.'
-Root.run
 #system 'stty -raw echo'
