@@ -10,13 +10,14 @@ module Root
   def run
     self.socket = TCPServer.open(5000).accept
     loop do
-      case @command = socket.readline[0..-2].tap {|e| p e}
+      case command = socket.readline[0..-2].tap {|e| p e}
       when '.poll'
         socket.puts Basic.current_text_grammar
       else
-        puts "Context: #{@command}"
-        #Basic.notify @command
-        Basic.process @command
+        puts "Received: #{command}"
+        words = eval(a).map {|e| e.gsub(/\\.*/,'')}
+        #Basic.notify command
+        Basic.process words
       end
     end
   end
@@ -34,89 +35,91 @@ module Root
     }
 
     SayType = {
-      'say  <dgndictation>' =>    ->(r) { `xte 'str #{words[1..-1].join(' ')}'` },
-      'type <dgndictation>' =>    ->(r) {
-        `xte 'str #{words[1..-1].join(' ')}'`
+      'say  <dgndictation>' =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
+      'word <dgnwords>'     =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
+      'let  <dgnletters>'   =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
+      'type <dgndictation>' =>    ->(w) {
+        `xte 'str #{w[1..-1].join(' ')}'`
         `xte 'key Return' ')}'`
       }
     }
 
     Letters = {
-      'Aff'    => ->(r) { `xte 'key A'` },
-      'Brav'   => ->(r) { `xte 'key B'` },
-      'Cai'    => ->(r) { `xte 'key C'` },
-      'Doy'    => ->(r) { `xte 'key D'` },
-      'Eck'    => ->(r) { `xte 'key E'` },
-      'Fay'    => ->(r) { `xte 'key F'` },
-      'Goff'   => ->(r) { `xte 'key G'` },
-      'Hoop'   => ->(r) { `xte 'key H'` },
-      'Ish'    => ->(r) { `xte 'key I'` },
-      'Jo'     => ->(r) { `xte 'key J'` },
-      'Keel'   => ->(r) { `xte 'key K'` },
-      'Lee'    => ->(r) { `xte 'key L'` },
-      'Mike'   => ->(r) { `xte 'key M'` },
-      'Noy'    => ->(r) { `xte 'key N'` },
-      'Osc'    => ->(r) { `xte 'key O'` },
-      'Osh'    => ->(r) { `xte 'key O'` },
-      'Pui'    => ->(r) { `xte 'key P'` },
-      'Pom'    => ->(r) { `xte 'key P'` },
-      'Quebec' => ->(r) { `xte 'key Q'` },
-      'Queen'  => ->(r) { `xte 'key Q'` },
-      'Ree'    => ->(r) { `xte 'key R'` },
-      'Soi'    => ->(r) { `xte 'key S'` },
-      'Tay'    => ->(r) { `xte 'key T'` },
-      'Uni'    => ->(r) { `xte 'key U'` },
-      'Umm'    => ->(r) { `xte 'key U'` },
-      'Van'    => ->(r) { `xte 'key V'` },
-      'Wes'    => ->(r) { `xte 'key W'` },
-      'Xanth'  => ->(r) { `xte 'key X'` },
-      'Yaa'    => ->(r) { `xte 'key Y'` },
-      'Zul'    => ->(r) { `xte 'key Z'` },
-      'a'      => ->(r) { `xte 'key a'` },
-      'b'      => ->(r) { `xte 'key b'` },
-      'c'      => ->(r) { `xte 'key c'` },
-      'd'      => ->(r) { `xte 'key d'` },
-      'e'      => ->(r) { `xte 'key e'` },
-      'f'      => ->(r) { `xte 'key f'` },
-      'g'      => ->(r) { `xte 'key g'` },
-      'h'      => ->(r) { `xte 'key h'` },
-      'i'      => ->(r) { `xte 'key i'` },
-      'j'      => ->(r) { `xte 'key j'` },
-      'k'      => ->(r) { `xte 'key k'` },
-      'l'      => ->(r) { `xte 'key l'` },
-      'm'      => ->(r) { `xte 'key m'` },
-      'n'      => ->(r) { `xte 'key n'` },
-      'o'      => ->(r) { `xte 'key o'` },
-      'p'      => ->(r) { `xte 'key p'` },
-      'q'      => ->(r) { `xte 'key q'` },
-      'r'      => ->(r) { `xte 'key r'` },
-      's'      => ->(r) { `xte 'key s'` },
-      't'      => ->(r) { `xte 'key t'` },
-      'u'      => ->(r) { `xte 'key u'` },
-      'v'      => ->(r) { `xte 'key v'` },
-      'w'      => ->(r) { `xte 'key w'` },
-      'x'      => ->(r) { `xte 'key x'` },
-      'y'      => ->(r) { `xte 'key y'` },
-      'z'      => ->(r) { `xte 'key z'` },
-      'pysh'   => ->(r) { `xte 'key Return'` }
+      'Aff'    => ->(w) { `xte 'key A'` },
+      'Brav'   => ->(w) { `xte 'key B'` },
+      'Cai'    => ->(w) { `xte 'key C'` },
+      'Doy'    => ->(w) { `xte 'key D'` },
+      'Eck'    => ->(w) { `xte 'key E'` },
+      'Fay'    => ->(w) { `xte 'key F'` },
+      'Goff'   => ->(w) { `xte 'key G'` },
+      'Hoop'   => ->(w) { `xte 'key H'` },
+      'Ish'    => ->(w) { `xte 'key I'` },
+      'Jo'     => ->(w) { `xte 'key J'` },
+      'Keel'   => ->(w) { `xte 'key K'` },
+      'Lee'    => ->(w) { `xte 'key L'` },
+      'Mike'   => ->(w) { `xte 'key M'` },
+      'Noy'    => ->(w) { `xte 'key N'` },
+      'Osc'    => ->(w) { `xte 'key O'` },
+      'Osh'    => ->(w) { `xte 'key O'` },
+      'Pui'    => ->(w) { `xte 'key P'` },
+      'Pom'    => ->(w) { `xte 'key P'` },
+      'Quebec' => ->(w) { `xte 'key Q'` },
+      'Queen'  => ->(w) { `xte 'key Q'` },
+      'Ree'    => ->(w) { `xte 'key R'` },
+      'Soi'    => ->(w) { `xte 'key S'` },
+      'Tay'    => ->(w) { `xte 'key T'` },
+      'Uni'    => ->(w) { `xte 'key U'` },
+      'Umm'    => ->(w) { `xte 'key U'` },
+      'Van'    => ->(w) { `xte 'key V'` },
+      'Wes'    => ->(w) { `xte 'key W'` },
+      'Xanth'  => ->(w) { `xte 'key X'` },
+      'Yaa'    => ->(w) { `xte 'key Y'` },
+      'Zul'    => ->(w) { `xte 'key Z'` },
+      'a'      => ->(w) { `xte 'key a'` },
+      'b'      => ->(w) { `xte 'key b'` },
+      'c'      => ->(w) { `xte 'key c'` },
+      'di'      => ->(w) { `xte 'key d'` },
+      'em'      => ->(w) { `xte 'key e'` },
+      'f'      => ->(w) { `xte 'key f'` },
+      'g'      => ->(w) { `xte 'key g'` },
+      'h'      => ->(w) { `xte 'key h'` },
+      'i'      => ->(w) { `xte 'key i'` },
+      'j'      => ->(w) { `xte 'key j'` },
+      'k'      => ->(w) { `xte 'key k'` },
+      'l'      => ->(w) { `xte 'key l'` },
+      'm'      => ->(w) { `xte 'key m'` },
+      'n'      => ->(w) { `xte 'key n'` },
+      'o'      => ->(w) { `xte 'key o'` },
+      'p'      => ->(w) { `xte 'key p'` },
+      'q'      => ->(w) { `xte 'key q'` },
+      'r'      => ->(w) { `xte 'key r'` },
+      's'      => ->(w) { `xte 'key s'` },
+      't'      => ->(w) { `xte 'key t'` },
+      'u'      => ->(w) { `xte 'key u'` },
+      'v'      => ->(w) { `xte 'key v'` },
+      'w'      => ->(w) { `xte 'key w'` },
+      'x'      => ->(w) { `xte 'key x'` },
+      'y'      => ->(w) { `xte 'key y'` },
+      'z'      => ->(w) { `xte 'key z'` },
+      'pysh'   => ->(w) { `xte 'key Return'` }
     }
 
     Awesome = {
-      'one'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
-      'two'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
-      'three' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
-      'four'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][4])' },
-      'five'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][5])' },
-      'six'   => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
-      'seven' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
-      'eight' => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
-      'nine'  => ->(r) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
-      'nex'   => ->(r) { awesome 'awful.client.focus.byidx(1)'               },
-      'prev'  => ->(r) { awesome 'awful.client.focus.byidx(-1)'              }
+      'one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
+      'two'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
+      'three' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
+      'four'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][4])' },
+      'five'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][5])' },
+      'six'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
+      'seven' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
+      'eight' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
+      'nine'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
+      'nex'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
+      'prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              }
     }
 
     Programs = {
-      'browser'  => ->(r) { `google-chrome` }
+      'browser'  => ->(w) { `google-chrome` }
     }
 
     def current_text_grammar
@@ -128,14 +131,18 @@ module Root
     end
 
     def text_grammar *grammars
-      "<dgndictation> imported; <main> exported = " +
-        grammars.flat_map {|e| e.keys}.join(' | ') + ";"
+      "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; " +
+        "<main> exported = " + grammars.flat_map {|e| e.keys}.join(' | ') + ";"
     end
 
-    def process command
-      @current_grammars.each do |g|
+    def process words
+      @current_grammars.flat_map {|e| e.to_a}.
+        each {|e| e[1].call(words) if e[0] == words.join(' ') }
 
-      end
+      @current_grammars.flat_map {|e| e.to_a}.
+        each {|e| gram_words = e[0].split(' ');
+              e[1].call(words) if gram_words .size == 2 &&
+              gram_words[1][0] == '<' && gram_words[0] == words[0] && p("got #{e}")}
     rescue StandardError => e
       p e
     end
