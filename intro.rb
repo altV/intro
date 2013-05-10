@@ -15,7 +15,7 @@ module Root
         socket.puts Basic.current_text_grammar
       else
         puts "Received: #{command}"
-        words = eval(a).map {|e| e.gsub(/\\.*/,'')}
+        words = eval(command).map {|e| e.gsub(/\\.*/,'')}
         #Basic.notify command
         Basic.process words
       end
