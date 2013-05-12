@@ -5,14 +5,13 @@ require 'active_support/all'
 
 module Root
   extend self
-  attr_accessor :socket
 
   def run
-    self.socket = TCPServer.open(5000).accept
+    $socket ||= TCPServer.open(5000).accept
     loop do
-      case command = socket.readline[0..-2].tap {|e| p e}
+      case command = $socket.readline[0..-2].tap {|e| p e}
       when '.poll'
-        socket.puts Basic.current_text_grammar
+        $socket.puts Basic.current_text_grammar
       else
         puts "Received: #{command}"
         words = eval(command).map {|e| e.gsub(/\\.*/,'')}
@@ -80,11 +79,11 @@ module Root
       'c'      => ->(w) { `xte 'key c'` },
       'di'      => ->(w) { `xte 'key d'` },
       'em'      => ->(w) { `xte 'key e'` },
-      'f'      => ->(w) { `xte 'key f'` },
-      'g'      => ->(w) { `xte 'key g'` },
-      'h'      => ->(w) { `xte 'key h'` },
-      'i'      => ->(w) { `xte 'key i'` },
-      'j'      => ->(w) { `xte 'key j'` },
+      'for'      => ->(w) { `xte 'key f'` },
+      'gim'      => ->(w) { `xte 'key g'` },
+      'him'      => ->(w) { `xte 'key h'` },
+      'ees'      => ->(w) { `xte 'key i'` },
+      'jim'      => ->(w) { `xte 'key j'` },
       'k'      => ->(w) { `xte 'key k'` },
       'l'      => ->(w) { `xte 'key l'` },
       'm'      => ->(w) { `xte 'key m'` },
@@ -105,21 +104,22 @@ module Root
     }
 
     Awesome = {
-      'one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
-      'two'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
-      'three' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
-      'four'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][4])' },
-      'five'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][5])' },
-      'six'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
-      'seven' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
-      'eight' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
-      'nine'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
-      'nex'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
-      'prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              }
+      'a one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
+      'a two'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
+      'a three' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
+      'a four'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][4])' },
+      'a five'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][5])' },
+      'a six'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][6])' },
+      'a seven' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
+      'a eight' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
+      'a nine'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
+      'a nex'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
+      'a prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              }
     }
 
     Programs = {
-      'browser'  => ->(w) { `google-chrome` }
+      'launch browser' => ->(w) { `google-chrome` },
+      'launch gedit'   => ->(w) { `gedit` }
     }
 
     def current_text_grammar

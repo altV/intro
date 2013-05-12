@@ -1,3 +1,5 @@
+puts 'Awaiting connection on 5000'
+$socket ||= TCPServer.open(5000).accept
 loop do
   break if $ninja
   puts "Reloading"
