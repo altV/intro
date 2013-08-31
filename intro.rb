@@ -55,7 +55,7 @@ module Root
       'easy'    => ->(w) { `xte 'str E'` },
       'egg'     => ->(w) { `xte 'str e'` },
       'Fay'     => ->(w) { `xte 'str F'` },
-      'for'     => ->(w) { `xte 'str f'` },
+      'far'     => ->(w) { `xte 'str f'` },
       'Goff'    => ->(w) { `xte 'str G'` },
       'gim'     => ->(w) { `xte 'str g'` },
       'Hoop'    => ->(w) { `xte 'str H'` },
@@ -89,78 +89,32 @@ module Root
       'Umm'     => ->(w) { `xte 'str U'` },
       'you'     => ->(w) { `xte 'str u'` },
       'Van'     => ->(w) { `xte 'str V'` },
-      'vee'     => ->(w) { `xte 'str v'` },
+      'vim'     => ->(w) { `xte 'str v'` },
       'Woop'    => ->(w) { `xte 'str W'` },
       'wes'     => ->(w) { `xte 'str w'` },
-      'Xanth'   => ->(w) { `xte 'str X'` },
+      'Xor'   => ->(w) { `xte 'str X'` },
       'ex'      => ->(w) { `xte 'str x'` },
       'Yaa'     => ->(w) { `xte 'str Y'` },
       'why'     => ->(w) { `xte 'str y'` },
       'Zul'     => ->(w) { `xte 'str Z'` },
       'zee'     => ->(w) { `xte 'str z'` },
-      'pysh'    => ->(w) { `xte 'key Return'` },
-      'never'   => ->(w) { `xte 'key Escape'` }
-    }
 
-    #Letters = {
-      #'Aff'    => ->(w) { `xte 'key A'` }, #ok
-      #'a'      => ->(w) { `xte 'key a'` }, #ok
-      #'Brav'   => ->(w) { `xte 'key B'` }, #ok
-      #'b'      => ->(w) { `xte 'key b'` },
-      #'Cai'    => ->(w) { `xte 'key C'` }, #ok
-      #'c'      => ->(w) { `xte 'key c'` },
-      #'Doy'    => ->(w) { `xte 'key D'` }, #ok
-      #'di'      => ->(w) { `xte 'key d'` },
-      #'Eck'    => ->(w) { `xte 'key E'` },
-      #'em'      => ->(w) { `xte 'key e'` }, #ok
-      #'Fay'    => ->(w) { `xte 'key F'` }, #ok
-      #'for'      => ->(w) { `xte 'key f'` }, #ok
-      #'Goff'   => ->(w) { `xte 'key G'` }, #ok
-      #'gim'      => ->(w) { `xte 'key g'` }, #ok
-      #'Hoop'   => ->(w) { `xte 'key H'` }, #ok
-      #'him'      => ->(w) { `xte 'key h'` },
-      #'Ish'    => ->(w) { `xte 'key I'` },
-      #'ees'      => ->(w) { `xte 'key i'` },
-      #'Jo'     => ->(w) { `xte 'key J'` },
-      #'jim'      => ->(w) { `xte 'key j'` },
-      #'Keel'   => ->(w) { `xte 'key K'` },
-      #'k'      => ->(w) { `xte 'key k'` },
-      #'Lee'    => ->(w) { `xte 'key L'` },
-      #'l'      => ->(w) { `xte 'key l'` },
-      #'Mike'   => ->(w) { `xte 'key M'` },
-      #'m'      => ->(w) { `xte 'key m'` },
-      #'Noy'    => ->(w) { `xte 'key N'` },
-      #'n'      => ->(w) { `xte 'key n'` },
-      #'Osc'    => ->(w) { `xte 'key O'` },
-      #'o'      => ->(w) { `xte 'key o'` },
-      #'Osh'    => ->(w) { `xte 'key O'` },
-      #'Pui'    => ->(w) { `xte 'key P'` },
-      #'Pom'    => ->(w) { `xte 'key P'` },
-      #'p'      => ->(w) { `xte 'key p'` },
-      #'Quebec' => ->(w) { `xte 'key Q'` },
-      #'Queen'  => ->(w) { `xte 'key Q'` },
-      #'q'      => ->(w) { `xte 'key q'` },
-      #'Ree'    => ->(w) { `xte 'key R'` },
-      #'r'      => ->(w) { `xte 'key r'` },
-      #'Soi'    => ->(w) { `xte 'key S'` },
-      #'s'      => ->(w) { `xte 'key s'` },
-      #'Tay'    => ->(w) { `xte 'key T'` },
-      #'t'      => ->(w) { `xte 'key t'` },
-      #'Uni'    => ->(w) { `xte 'key U'` },
-      #'Umm'    => ->(w) { `xte 'key U'` },
-      #'u'      => ->(w) { `xte 'key u'` },
-      #'Van'    => ->(w) { `xte 'key V'` },
-      #'v'      => ->(w) { `xte 'key v'` },
-      #'Wes'    => ->(w) { `xte 'key W'` },
-      #'w'      => ->(w) { `xte 'key w'` },
-      #'Xanth'  => ->(w) { `xte 'key X'` },
-      #'x'      => ->(w) { `xte 'key x'` },
-      #'Yaa'    => ->(w) { `xte 'key Y'` },
-      #'y'      => ->(w) { `xte 'key y'` },
-      #'Zul'    => ->(w) { `xte 'key Z'` },
-      #'z'      => ->(w) { `xte 'key z'` },
-      #'pysh'   => ->(w) { `xte 'key Return'` }
-    #}
+      'pysh'    => ->(w) { `xte 'key Return'` },
+      'never'   => ->(w) { `xte 'key Escape'` },
+      'quote'   => ->(w) { `xte "str '"` },
+      'never'   => ->(w) { `xte 'str "'` },
+
+      'one'   => ->(w) { `xte 'str 1'` },
+      'two'   => ->(w) { `xte 'str 2'` },
+      'three' => ->(w) { `xte 'str 3'` },
+      'four'  => ->(w) { `xte 'str 4'` },
+      'five'  => ->(w) { `xte 'str 5'` },
+      'six'   => ->(w) { `xte 'str 6'` },
+      'seven' => ->(w) { `xte 'str 7'` },
+      'eight' => ->(w) { `xte 'str 8'` },
+      'nine'  => ->(w) { `xte 'str 9'` },
+      'zero'  => ->(w) { `xte 'str 0'` }
+    }
 
     Awesome = {
       'at one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
@@ -191,18 +145,24 @@ module Root
 
     def text_grammar *grammars
       "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; " +
-        "<main> exported = " + grammars.flat_map {|e| e.keys}.join(' | ') + ";"
+        "<main> exported = (" + grammars.flat_map {|e| e.keys}.join(' | ') + ")+;"
     end
 
     def process words
-      @current_grammars.flat_map {|e| e.to_a}.
-        each {|e| e[1].call(words) if e[0] == words.join(' ') }
+      grammars_kv = @current_grammars.flat_map {|e| e.to_a}
 
-      @current_grammars.flat_map {|e| e.to_a}.
+      grammars_kv.
+        each {|e| e[1].call(words) if e[0] == words.join(' ') && e[0].split(' ').size == 2 }
 
+      grammars_kv.
         each {|e| gram_words = e[0].split(' ');
-              e[1].call(words) if gram_words .size == 2 &&
-              gram_words[1][0] == '<' && gram_words[0] == words[0] && p("got #{e}")}
+              e[1].call(words) if gram_words.size == 2 &&
+                gram_words[1][0] == '<' && gram_words[0] == words[0] && p("got #{e}")}
+
+      words.each {|word| grammars_kv.
+                            each {|e| e[1].call(words) if e[0] == word }
+      }
+
     rescue StandardError => e
       p e
     end
