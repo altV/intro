@@ -1,5 +1,5 @@
 class Grammar
-  Awesome = {
+  Awesome = Grammar.new :awesome,
     'at one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
     'at two'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
     'at three' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][3])' },
@@ -11,5 +11,4 @@ class Grammar
     'at nine'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
     'at next'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
     'at prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              }
-  }
 end

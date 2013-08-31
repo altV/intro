@@ -4,6 +4,7 @@ require 'socket'
 require 'active_support/all'
 
 ActiveSupport::Dependencies.autoload_paths += ["."]
-def reload; ActiveSupport::Dependencies.clear end
+def reload!; ActiveSupport::Dependencies.clear end
+def r; ActiveSupport::Dependencies.clear end
 
 Intro.run if __FILE__ == $0

@@ -1,4 +1,3 @@
 class Grammar
-  GnomeTerminal = {
-  }
+  GnomeTerminal = Grammar.new :gnome_terminal, nil
 end

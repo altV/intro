@@ -10,12 +10,12 @@ module Intro
     loop do
       case command = $socket.readline[0..-2].tap {|e| p e}
       when '.poll'
-        $socket.puts Basic.current_text_grammar
+        $socket.puts current_text_grammar
       else
         puts "Received: #{command}"
         words = eval(command).map {|e| e.gsub(/\\.*/,'')}
-        #Basic.notify command
-        Basic.process words
+        #notify command
+        process words
       end
     end
   end
@@ -32,7 +32,7 @@ module Intro
   end
 
   def current_grammars
-    @current_grammars = [Letters, SayType, GnomeTerminal, Awesome]
+    [Letters, SayType, GnomeTerminal, Awesome]
   end
 
   def text_grammar *grammars
@@ -72,3 +72,4 @@ end
 
 Intro.run if __FILE__ == $0
 puts 'Ready.'
+#system 'stty -raw echo'

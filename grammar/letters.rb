@@ -1,5 +1,5 @@
 class Grammar
-  Letters = {
+  Letters = Grammar.new :letters,
     'apple'   => ->(w) { `xte 'str A'` },
     'ash'     => ->(w) { `xte 'str a'` },
     'boom'    => ->(w) { `xte 'str B'` },
@@ -70,5 +70,4 @@ class Grammar
     'eight' => ->(w) { `xte 'str 8'` },
     'nine'  => ->(w) { `xte 'str 9'` },
     'zero'  => ->(w) { `xte 'str 0'` }
-  }
 end

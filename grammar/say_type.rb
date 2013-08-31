@@ -1,5 +1,5 @@
 class Grammar
-  SayType = {
+  SayType = Grammar.new :saytype,
     'say  <dgndictation>' =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
     'word <dgnwords>'     =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
     'let  <dgnletters>'   =>    ->(w) { `xte 'str #{w[1..-1].join(' ')}'` },
@@ -7,5 +7,4 @@ class Grammar
       `xte 'str #{w[1..-1].join(' ')}'`
       `xte 'key Return'`
     }
-  }
 end
