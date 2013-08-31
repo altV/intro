@@ -1,15 +1,9 @@
+require 'pry-full'
+require 'io/console'
 require 'socket'
+require 'active_support/all'
 
-puts 'Awaiting connection on 5000'
-$socket ||= TCPServer.open(5000).accept
-loop do
-  break if $ninja
-  puts "Reloading"
-  begin
-    load 'intro.rb', true
-  rescue SyntaxError, Errno::ENOENT => e
-    p e
-    sleep 1
-    retry
-  end
-end
+ActiveSupport::Dependencies.autoload_paths += ["."]
+def reload; ActiveSupport::Dependencies.clear end
+
+Intro.run if __FILE__ == $0
