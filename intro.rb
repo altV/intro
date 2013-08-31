@@ -17,7 +17,7 @@ module Intro
         puts "Received: #{command}"
         p words = eval(command.gsub('(','[').gsub(')',']')).
           tap {|words_with_grammars| words_with_grammars.each {|e| e[0].gsub!(/\\.*/,'')}}
-        #notify command
+        notify words.map {|e| e[0]}.join(' ')
         Grammar.process words
       end
       Reloader.execute_if_updated
@@ -40,14 +40,20 @@ module Intro
   end
 
   def current_grammars
-    [Grammar::Letters, Grammar::SayType, Grammar::Programs, Grammar::Awesome] #Grammar::GnomeTerminal
+    [Grammar::Letters,
+     Grammar::SayType,
+     Grammar::Vim,
+     Grammar::Programs,
+     Grammar::Awesome] #Grammar::GnomeTerminal
   end
 
   module Sys
     extend self
     def awesome     str; `echo "return #{str}" | awesome-client`                          end
     def awesome_say str; `echo "return #{str.gsub!('"','\"')}" | awesome-client | espeak` end
-    def notify message; `notify-send "Dragon" "#{message.gsub!('"','\"')}"`               end
+    def notify message, time = 3_000
+      `notify-send -t #{time} "Dragon" "#{message.lines.flat_map {|e| e.scan(/.{1,120}/) }.join("\n").shellescape}"`
+    end
     def say    message; `echo "#{message.gsub!('"','\"')}" | espeak`                      end
   end
   extend Sys
@@ -55,5 +61,5 @@ end
 
 
 Intro.run if __FILE__ == $0
-puts 'Ready.'
+puts '-------> Loaded <-------'
 #system 'stty -raw echo'
