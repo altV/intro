@@ -1,16 +1,17 @@
 module Intro
   extend self
-  Letters = Grammar::Letters
-  SayType = Grammar::SayType
+  Letters       = Grammar::Letters
+  SayType       = Grammar::SayType
   GnomeTerminal = Grammar::GnomeTerminal
-  Awesome = Grammar::Awesome
+  Awesome       = Grammar::Awesome
+  Programs      = Grammar::Programs
 
   def run
     $socket ||= TCPServer.open(5000).accept
     loop do
       case command = $socket.readline[0..-2].tap {|e| p e}
       when '.poll'
-        $socket.puts current_text_grammar
+        $socket.puts grammars_in_gragon
       else
         puts "Received: #{command}"
         words = eval(command).map {|e| e.gsub(/\\.*/,'')}
@@ -27,17 +28,15 @@ module Intro
   end
 
 
-  def current_text_grammar
-    text_grammar *current_grammars
+  def grammars_in_gragon *grammars
+    grammars = grammars.presence || current_grammars
+    "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; \n\n" +
+      current_grammars.join("\n\n") + "\n\n" +
+      "<main> exported = (" + grammars.map {|e| "<#{e.name}>"}.join(' | ') + ")+;"
   end
 
   def current_grammars
-    [Letters, SayType, GnomeTerminal, Awesome]
-  end
-
-  def text_grammar *grammars
-    "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; " +
-      "<main> exported = (" + grammars.flat_map {|e| e.keys}.join(' | ') + ")+;"
+    [Letters, SayType, Programs, Awesome] #GnomeTerminal
   end
 
   def process words
