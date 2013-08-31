@@ -58,12 +58,12 @@ class Grammar(GrammarBase):
         global s
         s.send(str(a)+"\n")
         print 'init',a, w
-    def gotResults(self,words,r):
-        print "total", words
-    def gotResults_main(self,words,resObj):
-        print "main", words, resObj
+    #def gotResults(self,words,r):
+    #    print "total", words
+    #def gotResults_main(self,words,resObj):
+    #    print "main", words, resObj
 
 run()
 print('Finished.')
 #sys.stdin.readline()
-time.sleep(3)
+time.sleep(15)

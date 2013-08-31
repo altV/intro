@@ -1,10 +1,11 @@
 module Intro
   extend self
-  Letters       = Grammar::Letters
-  SayType       = Grammar::SayType
-  GnomeTerminal = Grammar::GnomeTerminal
-  Awesome       = Grammar::Awesome
-  Programs      = Grammar::Programs
+  class ItsReloadTime < StandardError; end
+
+  Reloader = ActiveSupport::FileUpdateChecker.new(Dir["**/**"]) do
+    ActiveSupport::Dependencies.clear
+    raise ItsReloadTime
+  end
 
   def run
     $socket ||= TCPServer.open(5000).accept
@@ -14,11 +15,14 @@ module Intro
         $socket.puts grammars_in_gragon
       else
         puts "Received: #{command}"
-        words = eval(command).map {|e| e.gsub(/\\.*/,'')}
+        p words = eval(command.gsub('(','[').gsub(')',']')).
+          tap {|words_with_grammars| words_with_grammars.each {|e| e[0].gsub!(/\\.*/,'')}}
         #notify command
-        process words
+        Grammar.process words
       end
+      Reloader.execute_if_updated
     end
+  rescue ItsReloadTime
   end
 
   def current_state # not actually needed, and a bad knowledge. to be called from particular grammars
@@ -30,32 +34,13 @@ module Intro
 
   def grammars_in_gragon *grammars
     grammars = grammars.presence || current_grammars
-    "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; \n\n" +
-      current_grammars.join("\n\n") + "\n\n" +
+    "<dgnletters> imported; <dgnwords> imported; <dgndictation> imported; " +
+      current_grammars.join(" ") +
       "<main> exported = (" + grammars.map {|e| "<#{e.name}>"}.join(' | ') + ")+;"
   end
 
   def current_grammars
-    [Letters, SayType, Programs, Awesome] #GnomeTerminal
-  end
-
-  def process words
-    grammars_kv = @current_grammars.flat_map {|e| e.to_a}
-
-    grammars_kv.
-      each {|e| e[1].call(words) if e[0] == words.join(' ') && e[0].split(' ').size == 2 }
-
-    grammars_kv.
-      each {|e| gram_words = e[0].split(' ');
-            e[1].call(words) if gram_words.size == 2 &&
-              gram_words[1][0] == '<' && gram_words[0] == words[0] && p("got #{e}")}
-
-    words.each {|word| grammars_kv.
-                          each {|e| e[1].call(words) if e[0] == word }
-    }
-
-  rescue StandardError => e
-    p e
+    [Grammar::Letters, Grammar::SayType, Grammar::Programs, Grammar::Awesome] #Grammar::GnomeTerminal
   end
 
   module Sys

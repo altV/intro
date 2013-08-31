@@ -1,4 +1,5 @@
 class Grammar
+  extend Intro::Sys
   Awesome = Grammar.new :awesome,
     'at one'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][1])' },
     'at two'   => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][2])' },
@@ -9,6 +10,8 @@ class Grammar
     'at seven' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][7])' },
     'at eight' => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][8])' },
     'at nine'  => ->(w) { awesome 'awful.tag.viewonly(tags[mouse.screen][9])' },
-    'at next'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
-    'at prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              }
+    'at nex'   => ->(w) { awesome 'awful.client.focus.byidx(1)'               },
+    'at prev'  => ->(w) { awesome 'awful.client.focus.byidx(-1)'              },
+
+    'help'  => ->(w) { notify Letters.to_s              }
 end
