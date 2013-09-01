@@ -13,7 +13,7 @@ loop do
     Intro.run
   rescue SyntaxError, Errno::ENOENT => e
     p e
-    sleep 1
+    sleep 2
     retry
   end
 end if __FILE__ == $0

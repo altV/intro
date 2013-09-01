@@ -18,17 +18,18 @@ def run():
         natlink.setBeginCallback(beginCallback)
         natlink.setChangeCallback(changeCallback)
         updateGrammarFromClient()
-        natlink.waitForSpeech()
+        natlink.setMicState('on')
+        natlink.waitForSpeech(300)
         #data = client_socket.recv(512)
         #data = raw_input ( "SEND( TYPE q or Q to Quit):" )
     except:
         #print sys.exc_info()
         print traceback.format_exc()
     finally:
+        g.unload()
         natlink.natDisconnect()
         print 'iDisconnected.'
         s.close()
-        g.unload()
         print 'all closed'
 def beginCallback(moduleInfo, checkAll=None):
     print 'beginCallback'
